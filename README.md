@@ -8,3 +8,8 @@ Sudo privileges needed for lshw to fully function.
 
 Because of modular design other system info can be pulled with very simple manipulations of *_init and *_info functions.
 
+![Screenshot](screen1.png)
+
+![Screenshot](screen2.png)
+
+![Screenshot](screen3.png)
