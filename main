@@ -1,0 +1,26 @@
+. cpu_info
+. cache_info
+. memory_info
+. system_info
+. menu
+. check_package
+
+main () {
+check_package
+
+while true; do
+clear
+local options
+menu options
+dialog --infobox "Loading..." 0 0
+    case $options in
+        1) system_info;;
+        2) cpu_info;;
+        3) cache_info;;
+        4) memory_info;;
+        5) clear 
+           exit 0;;
+        *) dialog --title Error --msgbox "Wrong entry" 0 0;;
+    esac
+done
+}

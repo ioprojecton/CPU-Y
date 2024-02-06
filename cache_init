@@ -1,0 +1,51 @@
+#legend col:L1d L1i L2
+#       rows:ONE-SIZE ALL-SIZE WAYS
+. check_package
+
+cache_init() {
+local cache_data="$1"
+
+local -r key_attributes=$(sed -n "1p" <<<"$cache_data" | cut -d ' ' -f 2,3,4) #take the top line to make 2d array later
+
+cache_data=$(sed "1d" <<<"$cache_data" | tr -s ' ') #get rid of 1rst line now
+
+local -r k=$(cut -d ' ' -f 1 <<<"$cache_data" | tr a-z A-Z) #take cache naming column
+
+local -i i=1 #for outer loop
+local -i b=1 #for inner loop
+local keys
+while [ "$i" -le $(wc -l <<<"$k") ]; do
+     b=1
+     while [ "$b" -le $(wc -w <<<"$key_attributes") ]; do
+         part_1="$(sed -n "${i}p" <<<"$k")"
+         part_1+="_$(cut -d ' ' -f "$b" <<<"$key_attributes")"
+         keys+="$part_1"
+         keys+=" "
+         ((b++))
+     done
+    ((i++))
+done
+
+local -r v=$(cut -d ' ' -f 2,3,4 <<<"$cache_data") #values to be merged
+
+local -a value=($v)
+
+i=1
+
+local -n cache_d=$1
+
+while [ "$i" -le "$(wc -w <<<"$keys")" ]; do
+     key="$(cut -d ' ' -f "$i" <<<"$keys")"
+     cache_d["$key"]="${value["$((i-1))"]}"
+     ((i++))
+done
+
+cache_d["L1D_TOTAL"]="$(( $(tr -d [:alpha:] <<<"${cache_d["L1D_ALL-SIZE"]}") / $(tr -d [:alpha:] <<<"${cache_d["L1D_ONE-SIZE"]}"))) x ${cache_d["L1D_ONE-SIZE"]} ${cache_d["L1D_WAYS"]} ways"
+
+cache_d["L1I_TOTAL"]="$(( $(tr -d [:alpha:] <<<"${cache_d["L1I_ALL-SIZE"]}") / $(tr -d [:alpha:] <<<"${cache_d["L1I_ONE-SIZE"]}") )) x ${cache_d["L1I_ONE-SIZE"]} ${cache_d["L1I_WAYS"]} ways"
+
+cache_d["L2_TOTAL"]="$(( $(tr -d [:alpha:] <<<"${cache_d["L2_ALL-SIZE"]}") / $(tr -d [:alpha:] <<<"${cache_d["L2_ONE-SIZE"]}"))) x ${cache_d["L2_ONE-SIZE"]} ${cache_d["L2_WAYS"]} ways"
+
+#L3 L4 etc in future
+
+}

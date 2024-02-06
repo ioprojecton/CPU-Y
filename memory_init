@@ -1,0 +1,46 @@
+. format_key_value
+. data_loader
+
+memory_init() {
+local -r memory_lines=10
+
+local memory_data
+
+data_loader memory_data "sudo lshw -C memory -quiet"
+
+local -r occurancy_lines="$(grep -n -m 8 "\*-bank*" <<<"$memory_data" | cut -d ':' -f 1)"
+
+local -i occurances=$(wc -l <<<"$occurancy_lines")
+# 2 occurances
+
+local -r start=$(sed -n 1p <<<"$occurancy_lines")
+
+local -r end=$(($(sed -n '$p' <<<"$occurancy_lines")+memory_lines))
+memory_data=$(sed -n $start,${end}p <<<"$memory_data")
+
+#memory_data=$(sed '1d' <<<"$memory_data")
+
+memory_data=$(sed "1d;$((1+memory_lines))d" <<<"$memory_data")
+
+local k
+local v
+
+format_key_value k v "$memory_data"
+
+local -i i=1
+local name=0
+local -n memory_d=$1
+while [ "$i" -le "$(wc -l <<<"$k")" ] && [ "$occurances" -gt 0 ]; do
+    key=$(sed -n "${i}p" <<<"$k" | tr ' ' '_')
+    value=$(sed -n "${i}p" <<<"$v")
+    memory_d["${key}_${name}"]="$value"
+
+    if [ $((i % 9)) -eq 0 ]; then
+        ((name++))
+        ((occurances--))
+    fi
+((i++))
+done
+#return "$occurances"
+
+}

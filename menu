@@ -1,0 +1,13 @@
+menu() {
+
+local -n result=$1
+
+result=$(dialog --colors --no-mouse --no-cancel --backtitle "Powered by Surepic$(echo -e "\u00A9")" --title "\Z0Main menu" --menu "" 0 0 5 \
+1 "SYSTEM" \
+2 "CPU" \
+3 "CACHE" \
+4 "MEMORY" \
+5 "EXIT" \
+--output-fd 1)
+
+}

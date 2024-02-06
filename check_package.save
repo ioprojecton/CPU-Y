@@ -1,0 +1,12 @@
+. sudo_prompt
+. package_installer
+
+check_package() {
+
+sudo_prompt || exit 1
+
+lsb_release -i | grep -i "Ubuntu" || { echo "ERROR_UBUNTU"; exit 1; }
+package_installer "lshw" || { echo "ERROR_LSHW"; exit 1; }
+package_installer "lscpu" || { echo "ERROR_LSCPU"; exit 1; }
+package_installer "dialog" || { echo "ERROR_DIALOG"; exit 1; }
+}

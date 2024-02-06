@@ -1,0 +1,17 @@
+package_installer() {
+
+local app=$1
+
+
+if ! [ $(which "$app") ]; then
+    read -rp "Want to install "$app" package? [Y/N]: " -n 1
+    echo
+    case "$REPLY" in
+        Y | y) sudo apt-get install $app;;
+            *) return 1
+    esac
+
+else
+    return 0
+fi
+}

@@ -1,0 +1,14 @@
+. system_init
+. print_k_v
+
+system_info() {
+
+local -A system
+
+system_init system
+
+local -ra keys=("DESCRIPTION" "PRODUCT" "VENDOR" "SERIAL" "WIDTH")
+
+print_k_v keys system "System"
+
+}

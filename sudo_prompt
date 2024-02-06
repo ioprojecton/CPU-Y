@@ -1,0 +1,4 @@
+sudo_prompt() {
+    echo "This script requires sudo privileges."
+    sudo echo "Running with sudo privileges..." 2> /dev/null
+}

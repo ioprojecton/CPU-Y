@@ -1,0 +1,14 @@
+. cpu_init
+. print_k_v
+
+cpu_info() {
+
+local -A cpu
+
+cpu_init cpu
+
+local -ra keys=("ARCHITECTURE" "CPU_OP-MODES" "ADDRESS_SIZES" "BYTE_ORDER" "CPUS" "VENDOR_ID" "MODEL_NAME" "CPU_FAMILY" "MODEL" "STEPPING" "SLOT" "CLOCK" "THREADS_PER_CORE" "THREADS_TOTAL" "CORES_PER_SOCKET" "SOCKETS" "CPU_MAX_SPEED" "CPU_CURRENT_SPEED" "VIRTUALIZATION")
+
+print_k_v keys cpu "CPU"
+
+}

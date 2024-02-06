@@ -1,0 +1,23 @@
+print_k_v() {
+local -n k=$1
+local -n v=$2
+
+local longest_key=0
+local longest_value=0
+for length in "${k[@]}"; do
+   [ "$longest_key" -lt "${#length}" ] && \
+   longest_key="${#length}"
+done
+
+for name in "${k[@]}"; do
+   [ "$longest_value" -lt "${#v[$name]}" ] && \
+   longest_value="${#v[$name]}"
+done
+
+dialog --colors --clear --no-mouse --no-collapse --backtitle "Powered by Surepic$(echo -e "\u00A9")" --title "\Zb\Z4$3\ZB" --msgbox \
+"$(for name in "${k[@]}"; do
+   printf "\Zb*%-${longest_key}s\ZB\t%-${longest_value}s\n" \
+   "$(tr '_' ' ' <<<"$name")" "${v[$name]}"
+done)" 0 -1 #-1 to fill the width as needed
+
+}

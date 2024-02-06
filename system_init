@@ -1,0 +1,28 @@
+. format_key_value
+
+system_init() {
+
+local system_data="$(sudo lshw -C system -quiet)"
+
+local -r start_line="$(grep -n "description" <<<"$system_data" | cut -d ':' -f 1)"
+
+local -r end_line="$((start_line + 7))"
+
+system_data="$(sed -n $start_line,${end_line}p <<<"$system_data")"
+
+local k
+local v
+
+format_key_value k v "$system_data"
+
+local -i i=1
+local -n system_d=$1
+
+while [ "$i" -le "$(wc -l <<<"$k")" ]; do
+    key=$(sed -n "${i}p" <<<"$k" | tr ' ' '_')
+    value=$(sed -n "${i}p" <<<"$v")
+    system_d["$key"]="$value"
+((i++))
+done
+
+}

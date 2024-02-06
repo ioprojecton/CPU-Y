@@ -1,0 +1,42 @@
+. format_key_value
+
+cpu_init() {
+local lscpu_output="$(lscpu)"
+
+local lshw_output="$(sudo lshw -C cpu -quiet)"
+
+lshw_output=$(grep -Ew "slot|clock" <<<"$lshw_output" | tr -s [:space:])
+
+local k
+local v
+
+format_key_value k v "$lscpu_output"
+
+local -i i=1
+
+local tmp_k
+local tmp_v
+
+format_key_value tmp_k tmp_v "$lshw_output"
+
+k+=$'\n'$tmp_k
+v+=$'\n'$tmp_v
+
+local -n cpu_d=$1
+
+while [ "$i" -le "$(wc -l <<<"$k")" ]; do
+    key=$(sed -n "${i}p" <<<"$k" | tr ' ' '_')
+    value=$(sed -n "${i}p" <<<"$v")
+    cpu_d["$key"]="$value"
+    ((i++))
+done
+
+cpu_d["CPU_CURRENT_SPEED"]="$(echo "${cpu_d["CPU_MAX_SPEED"]} * $(tr -d %% <<<"${cpu_d["CPUS_SCALING_SPEED"]}") / 100" | bc)MHZ"
+
+cpu_d["CORES_TOTAL"]="$(( ${cpu_d["CORES_PER_SOCKET"]} * ${cpu_d["SOCKETS"]}))"
+
+cpu_d["THREADS_TOTAL"]="$(( ${cpu_d["CORES_TOTAL"]} * ${cpu_d["THREADS_PER_CORE"]}))"
+
+cpu_d["CPU_MAX_SPEED"]="$(printf "%.0f" "${cpu_d["CPU_MAX_SPEED"]}")MHZ"
+
+}

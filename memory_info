@@ -1,0 +1,27 @@
+. memory_init
+
+memory_info() {
+
+local -A memory
+
+memory_init memory
+
+local -i banks="$((${#memory[@]} / 9))"
+
+local -i i=0
+
+local -a names_1=("SLOT" "SERIAL" "PRODUCT" "CLOCK" "VENDOR" "DESCRIPTION" "SIZE" "WIDTH")
+
+local -i b=0
+
+dialog --colors --clear --no-mouse --no-collapse --backtitle "Powered by Surepic$(echo -e "\u00A9")" --title "\ZbMemory" --msgbox \
+"$(while [ "$b" -lt "$banks" ]; do
+    echo -e "\t\t\ZbBank $b\ZB"
+    while [ "$i" -lt "${#names_1[@]}" ]; do
+       echo -e "\Zb*${names_1[$i]}\ZB\t${memory[${names_1[$i]}_$b]}"
+        ((i++))
+    done
+((b++))
+done)" 0 0
+
+}

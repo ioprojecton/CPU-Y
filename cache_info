@@ -1,0 +1,14 @@
+. cache_init
+. print_k_v
+
+cache_info() {
+
+local -A cache
+
+cache_init cache
+
+local -ra keys=("L1D_TOTAL" "L1I_TOTAL" "L2_TOTAL")
+
+print_k_v keys cache "Cache"
+
+}
