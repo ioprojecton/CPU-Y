@@ -11,7 +11,6 @@ data_loader memory_data "sudo lshw -C memory -quiet"
 local -r occurancy_lines="$(grep -n -m 8 "\*-bank*" <<<"$memory_data" | cut -d ':' -f 1)"
 
 local -i occurances=$(wc -l <<<"$occurancy_lines")
-# 2 occurances
 
 local -r start=$(sed -n 1p <<<"$occurancy_lines")
 
