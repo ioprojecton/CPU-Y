@@ -3,7 +3,7 @@
 . check_package
 
 cache_init() {
-local cache_data="$1"
+local cache_data="$(lscpu -C)"
 
 local -r key_attributes=$(sed -n "1p" <<<"$cache_data" | cut -d ' ' -f 2,3,4) #take the top line to make 2d array later
 
